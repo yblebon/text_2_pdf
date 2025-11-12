@@ -1,116 +1,211 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Text to PDF Converter</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <style>
-        body {
-            background-color: #f4f4f4;
-            font-family: Arial, sans-serif;
-            margin-top: 20px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-        }
-        .container {
-            background-color: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-            width: 400px;
-            text-align: center;
-        }
-        textarea {
-            width: calc(100% - 20px);
-            margin: 10px 0;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            padding: 10px;
-            resize: vertical;
-        }
-        input {
-            margin: 5px 0;
-            width: calc(100% - 20px);
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            padding: 10px;
-        }
-        button {
-            margin: 20px 0;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 4px;
-            background-color: #007BFF;
-            color: white;
-            font-size: 16px;
-            cursor: pointer;
-        }
-        button:hover {
-            background-color: #0056b3;
-        }
-    </style>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Text to PDF Converter</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+  body {
+    background:#f4f4f4;
+    font-family:Arial,Helvetica,sans-serif;
+    margin:0;
+    display:flex;
+    justify-content:center;
+    align-items:flex-start;
+    min-height:100vh;
+    padding-top:40px;
+  }
+  .container{
+    background:#fff;
+    padding:20px;
+    border-radius:10px;
+    box-shadow:0 6px 18px rgba(0,0,0,.12);
+    width:92%;
+    max-width:720px;
+  }
+  h1{margin:0 0 12px;font-size:20px;text-align:center}
+  .row{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:8px}
+  label{width:100%;font-size:13px;color:#333;margin-bottom:4px}
+  input[type="text"], input[type="number"], textarea{
+    width:100%;
+    box-sizing:border-box;
+    padding:10px;border:1px solid #d0d7de;border-radius:6px;
+    font-size:14px;
+  }
+  textarea{min-height:160px;resize:vertical}
+  .two{flex:1 1 48%}
+  button{
+    width:100%;
+    padding:12px;border:0;border-radius:8px;background:#007bff;color:#fff;font-size:16px;
+    cursor:pointer;margin-top:8px;
+  }
+  button:hover{background:#005ecb}
+  @media(max-width:480px){ .two{flex-basis:100%} }
+  .meta-grid{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:6px}
+  .meta-grid .item{flex:1 1 48%}
+</style>
 </head>
 <body>
-    <div class="container">
-        <h1>Text to PDF Converter</h1>
-        
-        <label for="title">Title:</label>
-        <input type="text" id="title" placeholder="Enter title">
-        
-        <label for="subject">Subject:</label>
-        <input type="text" id="subject" placeholder="Enter subject">
-        
-        <label for="keywords">Keywords:</label>
-        <input type="text" id="keywords" placeholder="Enter keywords">
-        
-        <label for="author">Author:</label>
-        <input type="text" id="author" placeholder="Enter author">
-        
-        <textarea id="textInput" rows="10" placeholder="Enter your text here..."></textarea>
-        
-        <label for="leftMargin">Left Margin (mm):</label>
-        <input type="number" id="leftMargin" value="20">
-        
-        <label for="rightMargin">Right Margin (mm):</label>
-        <input type="number" id="rightMargin" value="20">
-        
-        <label for="topMargin">Top Margin (mm):</label>
-        <input type="number" id="topMargin" value="30">
-        
-        <button id="generatePdf">Generate PDF</button>
+<div class="container" role="main">
+  <h1>Text to PDF Converter</h1>
+
+  <div class="meta-grid">
+    <div class="item">
+      <label for="title">Title (filename)</label>
+      <input id="title" type="text" placeholder="Optional filename">
     </div>
+    <div class="item">
+      <label for="author">Author</label>
+      <input id="author" type="text" placeholder="Optional author (footer)">
+    </div>
+    <div class="item">
+      <label for="subject">Subject</label>
+      <input id="subject" type="text" placeholder="Optional subject (top)">
+    </div>
+    <div class="item">
+      <label for="keywords">Keywords</label>
+      <input id="keywords" type="text" placeholder="Optional keywords">
+    </div>
+  </div>
 
-    <script>
-        document.getElementById('generatePdf').addEventListener('click', function() {
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF();
-            const text = document.getElementById('textInput').value;
+  <label for="textInput">Content</label>
+  <textarea id="textInput" placeholder="Enter your text here..."></textarea>
 
-            const leftMargin = parseFloat(document.getElementById('leftMargin').value);
-            const rightMargin = parseFloat(document.getElementById('rightMargin').value);
-            const topMargin = parseFloat(document.getElementById('topMargin').value);
-            
-            // Optional Metadata
-            const title = document.getElementById('title').value;
-            const subject = document.getElementById('subject').value;
-            const keywords = document.getElementById('keywords').value;
-            const author = document.getElementById('author').value;
-            
-            // Setting PDF Metadata
-            if (title) doc.setProperties({ title: title });
-            if (subject) doc.setProperties({ subject: subject });
-            if (keywords) doc.setProperties({ keywords: keywords });
-            if (author) doc.setProperties({ author: author });
+  <div class="row">
+    <div class="two">
+      <label for="leftMargin">Left margin (mm)</label>
+      <input id="leftMargin" type="number" value="20" min="0">
+    </div>
+    <div class="two">
+      <label for="rightMargin">Right margin (mm)</label>
+      <input id="rightMargin" type="number" value="20" min="0">
+    </div>
+    <div class="two">
+      <label for="topMargin">Top margin (mm)</label>
+      <input id="topMargin" type="number" value="30" min="0">
+    </div>
+    <div class="two">
+      <label for="fontSize">Font size (pt)</label>
+      <input id="fontSize" type="number" value="12" min="6" max="24">
+    </div>
+  </div>
 
-            const pageWidth = doc.internal.pageSize.getWidth();
-            const textWidth = pageWidth - leftMargin - rightMargin;
+  <button id="generatePdf">Generate PDF</button>
+</div>
 
-            doc.text(text, leftMargin, topMargin, { maxWidth: textWidth });
-            doc.save('converted.pdf');
-        });
-    </script>
-</body>
-</html>
+<script>
+document.getElementById('generatePdf').addEventListener('click', () => {
+  const { jsPDF } = window.jspdf;
+  const title = document.getElementById('title').value.trim();
+  const author = document.getElementById('author').value.trim();
+  const subject = document.getElementById('subject').value.trim();
+  const keywords = document.getElementById('keywords').value.trim();
+  const text = document.getElementById('textInput').value || '';
+  const leftMargin = Number(document.getElementById('leftMargin').value) || 20;
+  const rightMargin = Number(document.getElementById('rightMargin').value) || 20;
+  const topMarginInput = Number(document.getElementById('topMargin').value) || 30;
+  const fontSize = Number(document.getElementById('fontSize').value) || 12;
+
+  const doc = new jsPDF({ unit: 'mm', format: 'a4' });
+
+  const props = {};
+  if (title) props.title = title;
+  if (subject) props.subject = subject;
+  if (keywords) props.keywords = keywords;
+  if (author) props.author = author;
+  if (Object.keys(props).length) doc.setProperties(props);
+
+  doc.setFont('helvetica');
+  doc.setFontSize(fontSize);
+  doc.setTextColor(0,0,0);
+
+  const pageWidth = doc.internal.pageSize.getWidth();
+  const pageHeight = doc.internal.pageSize.getHeight();
+  const usableWidth = pageWidth - leftMargin - rightMargin;
+  const lineHeight = (fontSize * 1.15) * 0.352777778; // pt->mm
+
+  // Subject (top) sizing and spacing — constrained to same usableWidth
+  const subjectFontSize = subject ? Math.min(26, fontSize + 10) : 0;
+  const subjectLineHeight = subjectFontSize ? (subjectFontSize * 1.15) * 0.352777778 : 0;
+  const subjectLines = subject ? doc.splitTextToSize(subject, usableWidth) : [];
+  const subjectHeight = subjectLines.length * subjectLineHeight;
+  const extraGap = subject ? 14 : 0; // increased gap between subject and body in mm
+
+  // Top margin includes user top margin plus subject block height and extra gap
+  const topMargin = topMarginInput + subjectHeight + extraGap;
+
+  // split body text into lines using same usableWidth
+  const lines = doc.splitTextToSize(text || '', usableWidth);
+
+  const bottomMargin = 10;
+  const footerYoffset = 8;
+
+  function drawSubjectOnPage() {
+    if (!subject) return;
+    doc.setFontSize(subjectFontSize);
+    doc.setFont(undefined, 'bold');
+    doc.setTextColor(0,0,0);
+    // start y inside the user's topMargin area
+    let y = topMarginInput + (subjectLineHeight * 0.8);
+    for (let i = 0; i < subjectLines.length; i++) {
+      const line = subjectLines[i];
+      // x aligned so subject is centered within the usableWidth (honoring left/right margins)
+      const textWidth = doc.getTextWidth(line);
+      //const x = leftMargin + (usableWidth - textWidth) / 2;
+      const x = leftMargin;
+
+      doc.text(line, x, y, { maxWidth: usableWidth });
+      y += subjectLineHeight;
+    }
+    doc.setFontSize(fontSize);
+    doc.setFont(undefined, 'normal');
+  }
+
+  function drawFooter() {
+    if (!author) return;
+    doc.setFontSize(Math.max(9, Math.min(11, fontSize - 1)));
+    doc.setTextColor(120,120,120);
+    const x = leftMargin;
+    const y = pageHeight - footerYoffset;
+    doc.text(author, x, y);
+    doc.setTextColor(0,0,0);
+    doc.setFontSize(fontSize);
+  }
+
+  // draw content with pagination, ensuring subject space reserved on first page
+  let lineIndex = 0;
+  let firstPage = true;
+
+  while (lineIndex < lines.length) {
+    if (firstPage) {
+      drawSubjectOnPage();
+    }
+
+    const currentTop = firstPage ? topMargin : topMarginInput;
+    let y = currentTop;
+
+    while (lineIndex < lines.length && (y + lineHeight) <= (pageHeight - bottomMargin - footerYoffset)) {
+      doc.text(lines[lineIndex], leftMargin, y);
+      y += lineHeight;
+      lineIndex++;
+    }
+
+    drawFooter();
+
+    if (lineIndex < lines.length) {
+      doc.addPage();
+      firstPage = false;
+    } else {
+      break;
+    }
+  }
+
+  if (lines.length === 0) {
+    drawSubjectOnPage();
+    drawFooter();
+  }
+
+  doc.save((title ? title.replace(/\s+/g,'_') : 'converted') + '.pdf');
+});
+</script>
