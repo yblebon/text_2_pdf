@@ -130,7 +130,8 @@ document.getElementById('generatePdf').addEventListener('click', () => {
   const subjectLineHeight = subjectFontSize ? (subjectFontSize * 1.15) * 0.352777778 : 0;
   const subjectLines = subject ? doc.splitTextToSize(subject, usableWidth) : [];
   const subjectHeight = subjectLines.length * subjectLineHeight;
-  const extraGap = subject ? 14 : 0; // increased gap between subject and body in mm
+  // const extraGap = subject ? 14 : 0; // increased gap between subject and body in mm
+  const extraGap = 20;
 
   // Top margin includes user top margin plus subject block height and extra gap
   const topMargin = topMarginInput + subjectHeight + extraGap;
